@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CalculateTax from "./components/CalculateTax/CalculateTax";
 import Header from "./components/Header/Header";
 import IncomeInput from "./components/IncomeInput/IncomeInput";
 import TaxResult from "./components/TaxResult/TaxResult";
+import Select from "./components/Select/Select";
+import MonthSalaryInput from "./components/MonthSalaryInput/MonthSalaryInput";
+import HoursSalaryInput from "./components/HourSalaryInput/HourSalaryInput";
+import HoursInput from "./components/HoursInput/HoursInput";
 
 const TaxCalculator = () => {
   const [tax, setTax] = useState(0);
   const [income, setIncome] = useState(0);
+  const [monthlyIncome, setMonthlyIncome] = useState(0);
+  const [hourlyIncome, setHourlyIncome] = useState(0);
+  const [hours, setHours] = useState(0);
+  const employmentTypeOptions = [
+    "FullTime",
+    "PartTime",
+    "Casual",
+    "Contractor",
+  ];
+  const incomeTypeOptions = ["Annual", "Monthly", "Hourly"];
+  const [employmentType, setEmploymentType] = useState(
+    employmentTypeOptions[0]
+  );
+  const [incomeType, setIncomeType] = useState(incomeTypeOptions[0]);
   const handleIncomeChange = (event) => {
     if (event.target.value < 0) {
       setIncome(0);
@@ -14,11 +32,43 @@ const TaxCalculator = () => {
       setIncome(event.target.value);
     }
   };
-  const calTax = (TaxableIncome) => {
+  const handleMonthly = (event) => {
+    if (event.target.value < 0) {
+      setMonthlyIncome(0);
+    } else {
+      setMonthlyIncome(event.target.value);
+    }
+  };
+  const handleHourly = (event) => {
+    if (event.target.value < 0) {
+      setHourlyIncome(0);
+    } else {
+      setHourlyIncome(event.target.value);
+    }
+  };
+  const handleHours = (event) => {
+    if (event.target.value < 0) {
+      setHours(0);
+    } else {
+      setHours(event.target.value);
+    }
+  };
+  const handleIncomeType = (event) => {
+    setIncomeType(event.target.value);
+  };
+  const handleEmploymentType = (event) => {
+    setEmploymentType(event.target.value);
+  };
+  useEffect(() => {
+    console.log(1);
+  }, [incomeType]);
+  const calTax = (TaxableIncome, MonthlyIncome, HourlyIncome, Hours) => {
+    TaxableIncome = TaxableIncome + MonthlyIncome * 12 + HourlyIncome * Hours;
     if (TaxableIncome == 0 || TaxableIncome == null) {
       setTax(0);
       return;
     }
+
     const TaxTable = [
       { MIN: 0, MAX: 18200, BASE: 0, RATE: 0 },
       { MIN: 18200, MAX: 45000, BASE: 0, RATE: 0.19 },
@@ -39,8 +89,41 @@ const TaxCalculator = () => {
   return (
     <div className="text-center grid gap-y-6">
       <Header />
-      <IncomeInput income={income} handleIncomeChange={handleIncomeChange} />
-      <CalculateTax calTax={calTax} income={income} />
+      {/* <EmploymentTypeSelection />
+      <IncomeTypeSelection handleIncomeType={handleIncomeType}/> */}
+      <Select
+        labelName="Employment Type Selection"
+        options={employmentTypeOptions}
+        selectedOption={employmentType}
+        selectChange={handleEmploymentType}
+      />
+      <Select
+        labelName="Income Type Selection"
+        options={incomeTypeOptions}
+        selectedOption={incomeType}
+        selectChange={handleIncomeType}
+      />
+      {incomeType === "Annual" ? (
+        <IncomeInput income={income} handleIncomeChange={handleIncomeChange} />
+      ) : incomeType === "Monthly" ? (
+        <MonthSalaryInput
+          monthlyIncome={monthlyIncome}
+          handleMonthly={handleMonthly}
+        />
+      ) : incomeType === "Hourly" ? (
+        <>
+          <HoursSalaryInput
+            hourlyIncome={hourlyIncome}
+            handleHourly={handleHourly}
+          />
+          <HoursInput 
+          hours={hours}
+          handleHours={handleHours}
+          />
+        </>
+      ) : null}
+      {/* <IncomeInput income={income} handleIncomeChange={handleIncomeChange} /> */}
+      <CalculateTax calTax={calTax} income={income} monthlyIncome={monthlyIncome} hourlyIncome={hourlyIncome} hours={hours}/>
       <TaxResult result={tax} />
     </div>
   );
