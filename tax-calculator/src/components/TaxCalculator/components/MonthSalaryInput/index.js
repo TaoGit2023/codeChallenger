@@ -1,1 +1,0 @@
-import MonthSalaryInput from "./MonthSalaryInput";

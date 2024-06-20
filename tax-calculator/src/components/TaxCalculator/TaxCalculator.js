@@ -4,13 +4,10 @@ import Header from "./components/Header/Header";
 import IncomeInput from "./components/IncomeInput/IncomeInput";
 import TaxResult from "./components/TaxResult/TaxResult";
 import Select from "./components/Select/Select";
-import MonthSalaryInput from "./components/MonthSalaryInput/MonthSalaryInput";
-import HoursSalaryInput from "./components/HourSalaryInput/HourSalaryInput";
-import HoursInput from "./components/HoursInput/HoursInput";
 
 const TaxCalculator = () => {
   const [tax, setTax] = useState(0);
-  const [income, setIncome] = useState(0);
+  const [annualIncome, setAnnualIncome] = useState(0);
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [hourlyIncome, setHourlyIncome] = useState(0);
   const [hours, setHours] = useState(0);
@@ -25,11 +22,11 @@ const TaxCalculator = () => {
     employmentTypeOptions[0]
   );
   const [incomeType, setIncomeType] = useState(incomeTypeOptions[0]);
-  const handleIncomeChange = (event) => {
+  const handleAnnualIncomeChange = (event) => {
     if (event.target.value < 0) {
-      setIncome(0);
+      setAnnualIncome(0);
     } else {
-      setIncome(event.target.value);
+      setAnnualIncome(event.target.value);
     }
   };
   const handleMonthly = (event) => {
@@ -104,26 +101,39 @@ const TaxCalculator = () => {
         selectChange={handleIncomeType}
       />
       {incomeType === "Annual" ? (
-        <IncomeInput income={income} handleIncomeChange={handleIncomeChange} />
+        <IncomeInput
+          inputLabel={"AnnualIncome"}
+          inputValue={annualIncome}
+          inputHandler={handleAnnualIncomeChange}
+        />
       ) : incomeType === "Monthly" ? (
-        <MonthSalaryInput
-          monthlyIncome={monthlyIncome}
-          handleMonthly={handleMonthly}
+        <IncomeInput
+          inputLabel={"MonthlyIncome"}
+          inputValue={monthlyIncome}
+          inputHandler={handleMonthly}
         />
       ) : incomeType === "Hourly" ? (
         <>
-          <HoursSalaryInput
-            hourlyIncome={hourlyIncome}
-            handleHourly={handleHourly}
+          <IncomeInput
+            inputLabel={"HourlyIncome"}
+            inputValue={hourlyIncome}
+            inputHandler={handleHourly}
           />
-          <HoursInput 
-          hours={hours}
-          handleHours={handleHours}
+          <IncomeInput
+            inputLabel={"Hours"}
+            inputValue={hours}
+            inputHandler={handleHours}
           />
         </>
       ) : null}
       {/* <IncomeInput income={income} handleIncomeChange={handleIncomeChange} /> */}
-      <CalculateTax calTax={calTax} income={income} monthlyIncome={monthlyIncome} hourlyIncome={hourlyIncome} hours={hours}/>
+      <CalculateTax
+        calTax={calTax}
+        annualIncome={annualIncome}
+        monthlyIncome={monthlyIncome}
+        hourlyIncome={hourlyIncome}
+        hours={hours}
+      />
       <TaxResult result={tax} />
     </div>
   );

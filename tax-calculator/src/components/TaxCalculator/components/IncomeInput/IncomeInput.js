@@ -1,13 +1,13 @@
-const IncomeInput = ({ income, handleIncomeChange }) => {
+const IncomeInput = ({ inputLabel, inputValue, inputHandler }) => {
   return (
     <div>
-      <label>Input Your annual Taxable Income:</label>
+      <label>{inputLabel}:</label>
       <input
         type="number"
-        id="income"
-        name="income"
-        value={income}
-        onChange={handleIncomeChange}
+        id={inputLabel}
+        name={inputLabel}
+        value={inputValue}
+        onChange={inputHandler}
         className="border-2 border-black rounded-md p-1"
       />
     </div>
